@@ -25,29 +25,38 @@ def extract_info(element):
   return info
 
 
-def extract_patient_details(element):
-  # Define the pattern for extracting details
-  pattern = r'(?P<Gender>[A-Za-z]+)\s+(?P<Race>[A-Za-z]+)\s+(?P<DOB>\d{2}/\d{2}/\d{2})\s+Fee:\s+\$?(?P<Fee>[\d.]+)\s+C:\s+(?P<Consultation>[\d.]+)\s+M:\s+(?P<Medicine>[\d.]+)\s+I:\s+(?P<Investigation>[\d.]+)'
+def extract_patient_details(data):
+    # Define a more flexible regex pattern to extract information
+    pattern = re.compile(r"(?i)(\w+)\s+(\w+)\s+(\d+/\d+/\d+)\s+Fee:\s+(\$\d+\.\d+)\s+C:\s+(\d+\.\d+)\s+M:\s*(\d+\.\d+)\s+I:\s+(\d+\.\d+)")
 
-  # Use regex to find matches
-  match = re.match(pattern, element)
+    # Match the pattern in the input data
+    match = pattern.match(data)
 
-  # Check if a match is found
-  if match:
-    details = match.groupdict()
-  else:
-    # Set default values if no match is found
-    details = {
-        'Gender': 'Unknown',
-        'Race': 'Unknown',
-        'DOB': 'Unknown',
-        'Fee': 'Unknown',
-        'Consultation': 'Unknown',
-        'Medicine': 'Unknown',
-        'Investigation': 'Unknown'
+    # Set default values
+    gender = "Unknown"
+    race = "Unknown"
+    dob = "Unknown"
+    fee = "Unknown"
+    consultation = "Unknown"
+    medicine = "Unknown"
+    investigation = "Unknown"
+
+    # If there is a match, extract information
+    if match:
+        gender, race, dob, fee, consultation, medicine, investigation = match.groups()
+
+    # Create a dictionary
+    patient_info = {
+        'Gender': gender,
+        'Race': race,
+        'DOB': dob,
+        'Fee': fee,
+        'Consultation': consultation,
+        'Medicine': medicine,
+        'Investigation': investigation
     }
 
-  return details
+    return patient_info
 
 
 def extract_illness_details(element):
